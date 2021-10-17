@@ -1,0 +1,218 @@
+SQL
+SQL tutorial provides basic and advanced concepts of SQL. Our SQL tutorial is designed for both beginners and professionals.
+
+SQL (Structured Query Language) is used to perform operations on the records stored in the database, such as updating records, inserting records, deleting records, creating and modifying database tables, views, etc.
+
+SQL is not a database system, but it is a query language.
+
+Suppose you want to perform the queries of SQL language on the stored data in the database. You are required to install any database management system in your systems
+
+Structured Query Language contains the following four components in its process:
+
+Query Dispatcher
+Optimization Engines
+Classic Query Engine
+SQL Query Engine, etc.
+
+The SQL commands help in creating and managing the database. The most common SQL commands which are highly used are mentioned below:
+
+CREATE command
+UPDATE command
+DELETE command
+SELECT command
+DROP command
+INSERT command
+
+Consider following relational schema and write the relational algebra expressions for given queries.
+Sailors(sid: integer, sname: string, rating: integer, age: real);
+Boats(bid: integer, bname: string, color: string);
+Reserves(sid: integer, bid: integer, day: date).
+
+SQL> select * from sailors;
+ 
+       SID SNAME                    RATING        AGE                           
+---------- -------------------- ---------- ----------                           
+        22 Dustin                        7         45                           
+        29 Brutus                        1         33                           
+        31 Lubber                        8       55.5                           
+        32 Andy                          8       25.5                           
+        58 Rusty                        10         35                           
+        64 Horataio                      7         35                           
+        71 Zorba                        10         16                           
+        74 Horataio                      9         35                           
+        85 Art                           3       25.5                           
+        95 Bob                           3       63.5                           
+10 rows selected.
+
+SQL> select * from reserves;
+       SID        BID DAY                                                      
+---------- ---------- ---------                                                 
+        22        101 10-OCT-98                                                 
+        22        102 10-OCT-98                                                 
+        22        103 08-OCT-98                                                 
+        22        104 07-OCT-98                                                 
+        31        102 10-NOV-98                                                 
+        31        103 06-NOV-98                                                 
+        31        104 12-NOV-98                                                 
+        64        101 05-SEP-98                                                 
+        64        102 08-SEP-98                                                 
+        74        103 08-SEP-98                                                 
+10 rows selected.
+
+SQL> select * from boats;
+ 
+       BID BNAME                COLOR                                           
+---------- -------------------- --------------------                            
+       101 Interlake            blue                                            
+       102 Interlake            red                                             
+       103 Clipper              green                                           
+       104 Marine               red  
+       
+ SQL Queries On Sailors Schema:
+ 1. If boat Number is 103.Then find the name of sailors?
+ 
+select s.sname
+from sailors s,reserves r
+where s.sid=r.sid and r.bid=103;
+ 
+Output:
+ 
+SNAME                                                                           
+--------------------                                                            
+Dustin                                                                          
+Lubber                                                                          
+Horataio  
+
+2. Find the names of sailors who have never reserved boat number 103.
+The SQL IN condition (sometimes called the IN operator) allows you to easily check whether any value in a value list Matches an expression. It is used in a SELECT, INSERT, UPDATE, or DELETE statement to help reduce the need for multiple OR conditions.
+
+The SQL NOT IN condition (sometimes called the IN operator) allows you to easily check whether any value in a value list NOT Matches an expression. It is used in a SELECT, INSERT, UPDATE or DELETE statement to help reduce the need for multiple OR conditions.
+
+select s.sname
+from sailors s
+where s.sid not in (select r.sid from reserves rwhere r.bid=103);
+ 
+Output:
+SNAME                                                                           
+--------------------                                                            
+Zorba                                                                           
+Art                                                                             
+Horataio                                                                        
+Rusty                                                                           
+Andy                                                                            
+Brutus                                                                          
+Bob                                                                             
+7 rows selected.
+
+3. Red boat are reserved, Find the name of Sailors?
+select sname
+from sailors s,boats b,reserves r
+where s.sid=r.sid and b.bid=r.bid and b.color='red';
+ 
+Output:
+SNAME                                                                           
+--------------------                                                            
+Dustin                                                                          
+Dustin                                                                          
+Lubber                                                                          
+Lubber                                                                          
+Horataio
+
+4. What is the color of boat reverse by Lubber?
+
+select b.color
+from boats b,sailors s,reserves r
+where s.sid=r.sid and b.bid=r.bid and s.sname='Lubber';
+ 
+COLOR                                                                           
+--------------------                                                            
+red                                                                             
+green                                                                           
+red         
+
+5. Find the names of sailors who have reserved both a red and a green boat?
+The SQL INTERSECT operator is used to return 2 or more SELECT statements resulting. It only returns the rows selected from all queries or data sets, though. If a record occurs in one question and not in the other, the INTERSECT results will omit the record.
+
+
+SQL> select s.sid,s.sname
+  2  from sailors s,boats b,reserves r
+  3  where s.sid=r.sid and b.bid=r.bid and b.color='red'
+  4  INTERSECT
+  5  select s.sid,s.sname
+  6  from sailors s,boats b,reserves r
+  7  where s.sid=r.sid and b.bid=r.bid and b.color='green';
+ 
+       SID SNAME                                                                
+---------- --------------------                                                 
+        22 Dustin                                                               
+        31 Lubber  
+        
+ 6. Find the names of sailors who have reserved a red but not a green boat?
+The SQL MINUS operator is used to return all the rows which are not returned by the second SELECT statement in the first SELECT statement. Each SELECT declaration describes a dataset. The MINUS operator must extract all records from the first dataset, then delete all records from the second dataset from the test.
+
+Oracle does not have EXCEPT but use keyword MINUS.
+select s.sid,s.sname
+from sailors s,boats b,reserves r
+where s.sid=r.sid and b.bid=r.bid and b.color='red'
+MINUS
+select s.sid,s.sname
+from sailors s,boats b,reserves r
+where s.sid=r.sid and b.bid=r.bid and b.color='green';
+ 
+       SID SNAME                                                                
+---------- --------------------                                                 
+        64 Horataio    
+      
+ 7. Find the sids of sailors with age over 20 who have not reserved a red boat.
+
+select s.sid,s.sname
+from sailors s,boats b,reserves r
+where s.sid=r.sid and b.bid=r.bid and s.age>20 and b.color!='red';
+ 
+       SID SNAME                                                                
+---------- --------------------                                                 
+        22 Dustin                                                               
+        22 Dustin                                                               
+        31 Lubber                                                               
+        64 Horataio                                                             
+        74 orataio        
+        
+ 8. Find the names of sailors who have reserved at least two different boats.
+
+select s.sid,s.sname
+from sailors s
+where s.sid in (select s.sid
+from sailors s,boats b,reserves r
+where s.sid=r.sid and b.bid=r.bid
+group by s.sid
+having COUNT(b.bid)>1);
+ 
+       SID SNAME                                                                
+---------- --------------------                                                 
+        22 Dustin                                                               
+        31 Lubber                                                               
+        64 Horataio   
+        
+9. Write an SQL Query to find the sailors who reserved all the boats?
+
+select s.sid,s.sname
+from sailors s
+where not exists (select b.bid
+from boats b
+where not exists (select r.bid
+from reserves r
+where r.bid=b.bid and r.sid=s.sid));
+ 
+       SID SNAME                                                                
+---------- --------------------                                                 
+        22 Dustin          
+ 
+ 10. Write a SQL Query to Find the ages of Sailors whose name begins and end with b and have at least three characters?
+
+select s.sid,s.age
+from sailors s
+where s.sname like 'B_%b';
+ 
+       SID        AGE                                                           
+---------- ----------                                                           
+        95       63.5       
